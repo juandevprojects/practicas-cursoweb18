@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <title>Problema 16 jdelg-pr1844-01</title>
+
+            <!-- bootstrap 4 -->
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        </head>
+        
+        <body>
+
+        <div class="container-fluid">
+            <h1>Problema 16</h1>
+            <p>Realiza el mismo programa del problema 11 pero realizando una llamada AJAX y mostrando el resultado en la misma página sin recargarla.</p>
+                     
+            <form action="http://localhost/jdelg-pr1844-01/pr16/procesa.php" method="post" class="row justify-content-center align-items-center" id="formoid">
+                <h2 class="col-12 text-center">Calculadora del área de un triángulo</h2>
+                <p class="col-12 text-center">Introduzca la base y la altura del triángulo</p>
+                                
+                <div class="form-group col-6 col-md-4">
+                <input type="number" step=".01" class="form-control" placeholder="Base" name="fbase" id="fbase">
+                </div>
+
+                <div class="form-group col-6 col-md-4">
+                <input type="number" step=".01" class="form-control" placeholder="Altura" name="faltura" id="faltura">
+                </div>
+               
+                <button type="submit" class="btn btn-primary col-9 col-md-5">Calcular el área del triángulo</button>
+            </form>
+
+            <div id="resultado"></div>
+        </div>        
+
+
+
+
+
+
+
+
+
+
+<!-- ********* scripts de bootstrap 4 ****** -->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- Mi js -->
+<script src="js/js.js"></script>
+
+    
+</body>
+</html>

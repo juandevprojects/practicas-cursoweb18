@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <title>Problema 17 jdelg-pr1844-01</title>
+
+            <!-- bootstrap 4 -->
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        </head>
+        
+        <body>
+
+        <div class="container-fluid">
+            <h1>Problema 17</h1>
+            <p>Realiza el mismo programa del problema 12 pero realizando una llamada AJAX y mostrando el resultado en la misma página sin recargarla.</p>
+                     
+            <form action="http://localhost/jdelg-pr1844-01/pr17/procesa.php" method="post" class="row justify-content-center align-items-center" id="formoid">
+                <h2 class="col-12 text-center">Convertidor de Euros a Pesetas</h2>
+                <p class="col-12 text-center">Introduzca el monto en Euros que desea convertir a Pesetas</p>
+                                
+                <div class="form-group col-10 col-md-7">
+                    <input type="number" step=".01" class="form-control text-center" placeholder="Euros" name="feuros" id="feuros">
+                </div>
+                <button type="submit" class="btn btn-primary col-9 col-md-6">Convertir Euros a Pesetas</button>
+            </form>
+
+            <div id="resultado"></div>
+        </div>        
+
+
+
+
+
+
+
+
+
+
+<!-- ********* scripts de bootstrap 4 ****** -->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- Mi js -->
+<script src="js/js.js"></script>
+
+    
+</body>
+</html>
