@@ -30,7 +30,7 @@
         <div class='container'>
         <h2>Calculadora de área de un triángulo</h2>
         <p>Introduzca la base y la altura del triángulo</p>
-        <form action='http://localhost/jdelg-pr1844-01/pr11/index.php' method='post'>
+        <form action='http://localhost/practicas-cursoweb18/jdelg-pr1844-01/pr11/index.php' method='post'>
             <div class='form-group'>
             <input type='number' class='form-control' placeholder='Introduzca la base del triángulo' name='fbase'>
             </div>
@@ -63,7 +63,7 @@
         <div class='container'>
         <h2>Calculadora de área de un triángulo</h2>
         <p>Introduzca la base y la altura del triángulo</p>
-        <form action='http://localhost/jdelg-pr1844-01/pr11/index.php' method='post'>
+        <form action='http://localhost/practicas-cursoweb18/jdelg-pr1844-01/pr11/index.php' method='post'>
             <div class='form-group'>
             <input type='number' class='form-control' placeholder='Introduzca la base del triángulo' name='fbase'>
             </div>
@@ -92,7 +92,7 @@
         <div class='container'>
         <h2>Calculadora de área de un triángulo</h2>
         <p>Introduzca la base y la altura del triángulo</p>
-        <form action='http://localhost/jdelg-pr1844-01/pr11/index.php' method='post'>
+        <form action='http://localhost/practicas-cursoweb18/jdelg-pr1844-01/pr11/index.php' method='post'>
             <div class='form-group'>
             <input type='number' class='form-control' placeholder='Introduzca la base del triángulo' name='fbase'>
             </div>

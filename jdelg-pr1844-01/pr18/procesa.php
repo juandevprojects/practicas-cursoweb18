@@ -24,14 +24,7 @@
                 $texto = $_POST["feuros"] * 1.13;
                 $texto = round($texto, 2);
                 echo json_encode( array('resultado'=>$resultado, 'mensaje'=> $texto, 'divisa' => $_POST['fdivisa'], 'euros' => $_POST['feuros']) );
-            }
-
-            
-        }
-        
-    }    
-     
-
-
-    
+            }            
+        }        
+    }        
 ?>
