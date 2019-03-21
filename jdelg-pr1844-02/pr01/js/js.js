@@ -78,7 +78,8 @@ $(function() {
                 codigohtml +="<option value='"+conta+"'>"+viene_de_php[conta]+"</option>";
             }
             $('#idselect').html(codigohtml);
-            // alert(codigohtml);
+            // $( "#idselect" ).prepend( "<option value='-1' selected>Introduce las horas</option>" );
+
         },
         error: function() {
             alert("ERROR Se ha producido un error en la comunicacion.");
