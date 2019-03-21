@@ -1,0 +1,32 @@
+.card {
+    /* opacity: 0.85; */
+    background-color: rgba(255, 255, 255, 0.85);
+    /* background-color: rgba(255, 255, 0, 0.70); */
+}
+
+#contenedor {
+    height: 100vh;
+    /* background-image: url(../img/basket-312684.svg);
+    background-repeat: no-repeat;
+    background-position: right;     */
+    /* background-size: 16%; */
+}
+
+#izquierdo {
+    height: 100vh;
+    background-image: url(../img/basket-312684.svg);
+    background-repeat: repeat-y;
+    /* background-size: 16%; */
+
+}
+
+#derecho {
+    height: 100vh;
+    background-image: url(../img/basket-312684.svg);
+    background-repeat: repeat-y;
+    /* background-size: 16%; */
+}
+
+.btn {
+    background-color: green;
+}

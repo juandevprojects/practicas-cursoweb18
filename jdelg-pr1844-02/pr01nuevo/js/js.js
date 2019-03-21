@@ -5,7 +5,13 @@ $(document).ready(function () {
         // console.log("Submit Detenido")
         event.preventDefault();
 
-        alert("Se presionó el botón submit");
+        $.alert({
+            animation: 'none',
+            closeAnimation: 'scaleY',
+            // theme: 'dark',
+            title: 'Botón clickeado!',
+            content: 'Acaba de enviar el pedido.',
+        });
 
     })
 })
