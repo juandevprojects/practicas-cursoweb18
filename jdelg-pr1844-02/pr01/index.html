@@ -1,59 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>pr1844-02-PR01</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jquery confirm CSS -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
+    <!-- mi estilo -->
     <link rel="stylesheet" href="css/estilos.css">
-    <title>Practica1</title>
+
+
+
 </head>
 
 <body>
-
     <div class="container">
-        <div class="row align-items-center justify-content-center">
-            <div class="card col-lg-8">
+
+        <!-- Este div contiene todo el formulario de pedidos -->
+        <div class="row align-items-center justify-content-center" id="contenedor">
+
+            <!-- Este div es para hacer un marco izquierdo con imágenes -->
+            <div class="d-none d-md-block col-md-2 col-lg-2" id="izquierdo"></div>
+
+            <!-- Este div contiene el formulario en si -->
+            <div class="card col-md-8 col-lg-8">
                 <div class="card-header">
-                    Supermercado DATW
+                    <!-- <h1>SUPERMERCADOS FACILITO</h1> -->
+                    SUPERMERCADOS FACILITO
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">Pedidos a domicilio</h5>
-                    <form>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="idnombre" placeholder="Introduce el nombre" required>
 
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="iddireccion" placeholder="Introduce dirección" required>
+                <div class="card-body">                   
+                    <!-- El formulario es para solicitar la entrega en domicilio de la compra del supermercado; pedirá nombre, dirección de entrega, observaciones y en un desplegable (select) las horas de entrega. -->
+                    <form action="/action_page.php" class="needs-validation" id="formoid" novalidate>
+                        <!-- <h1>SUPERMERCADOS FACILITO</h1> -->                    
+                        <fieldset>
+                            <legend>Pedidos a domicilio</legend>
+                            <div class="form-group">
+                                <!-- <label for="fnombre">Nombre:</label> -->
+                                <input type="text" class="form-control" id="fnombre" placeholder="Introduzca su nombre" required>
+                                <div class="invalid-feedback">Es necesario escribir el nombre</div>
+                            </div>
 
-                        </div>
-                        <div class="form-group">
-                            <label for="idselect">Horario de entrega</label>
-                            <select class="form-control" id="idselect">
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" id="idobservaciones" rows="3" placeholder="Observaciones"></textarea>
-                        </div>
-                        <button type="button" class="btn btn-primary" id="idboton">Enviar</button>
+                            <!-- <div class="form-group">
+                                <label for="fapellidos">Apellidos:</label>
+                                <input type="text" class="form-control" id="fapellidos"
+                                    placeholder="Introduzca sus apellidos">
+                            </div> -->
 
+                            <div class="form-group">
+                                <!-- <label for="fdireccion">Dirección de entrega:</label> -->
+                                <input type="text" class="form-control" id="fdireccion"
+                                    placeholder="Introduzca dirección de entrega" required>
+                                    <div class="invalid-feedback">Es necesario escribir la dirección</div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset>
+                            <legend>Horas de entrega</legend>
+                            <div class="form-group">
+                                <!-- <label for="sel1">Select list:</label> -->
+                                <select class="form-control" id="horas" required>
+                                    <!-- aquí deben introducirse el listado de horas proveniente de php por medio de un ajax -->
+                                </select>
+                                <div class="invalid-feedback">Debe especificar la hora de entrega</div>
+                            </div>                
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Observaciones</legend>
+                            <div class="form-group">                
+                                <!-- <label for="comment">Comment:</label> -->
+                                <textarea class="form-control" rows="3" id="observaciones" placeholder="(Opcional)"></textarea>
+                            </div>
+                        </fieldset>
+
+
+                        
+                        <button type="submit" class="btn btn-success">Confirmar pedido</button>
                     </form>
+
                 </div>
+
             </div>
+
+            <!-- Este div es para hacer un marco derecho con imágenes -->
+            <div class="d-none d-md-block col-md-2 col-lg-2" id="derecho"></div>
+            
+
         </div>
 
     </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+
+
+    <!-- jQuery library -->
+    <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+    </script>
+
+    <!-- Popper JS -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js">
+    </script>
+
+    <!-- Latest compiled JavaScript -->
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
+    </script>
+
+    <!-- jquery confirm js -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js">
+    </script>
+
+    <!-- mi js -->
     <script src="js/js.js"></script>
 </body>
+
 </html>

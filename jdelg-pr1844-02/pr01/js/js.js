@@ -1,88 +1,114 @@
-$('#idboton').on('click', function(){
-    var texto = $('#idnombre').val();
-    nombre = texto;
-    if (texto.length == 0){
-        $.alert('Debes introducir el nombre');
-    }else{
-        texto = $('#iddireccion').val();
-        direccion = texto;
-        if (texto.length == 0){
-            $.alert('Debes introducir la dirección');
-        }else{
-            hora = $('#idselect').val();
-            observaciones = $('#idobservaciones').val();
-            texto="<h4>¿Esta seguro de enviar estos datos?</h4>";
-            texto+="<p>Nombre: "+nombre+"</p>";
-            texto+="<p>Dirección: "+direccion+"</p>";
-            texto+="<p>Hora: "+$( 'select option:selected' ).text()+"</p>";
-            texto+="<p>Observaciones: "+observaciones+"</p>";
-            $.confirm({
-                title: 'Confirmación!',
-                content: texto,
-                buttons: {
-                    aceptar: function () {
-                        // $.alert('Confirmado!');
-                        $.ajax({
-                            url: 'http://localhost/PR1844_02CLASE/pr01/php/procesa.php',
-                            type: 'POST',
-                            retrieve: true,
-                            dataType: "JSON",
-                            data:{
-                                'nombre': nombre,
-                                'direccion': direccion,
-                                'hora': hora,
-                                'observaciones': observaciones,
-                            },
-                            success: function (viene_de_php){
-                                texto="<h5>Datos registrados</h5>";
-                                texto+="<p>Nombre: "+viene_de_php.nombre+"</p>";
-                                texto+="<p>Dirección: "+viene_de_php.direccion+"</p>";
-                                texto+="<p>Hora: "+viene_de_php.hora+"</p>";
-                                texto+="<p>Observaciones: "+viene_de_php.observaciones+"</p>";
-                                $.alert(texto);
-                                // alert ("PERFECTO!!!")
-                                // var codigohtml = '';
-                                // for (conta = 0; conta < viene_de_php.length; conta++) {
-                                //     codigohtml +="<option value='"+conta+"'>"+viene_de_php[conta]+"</option>";
-                                // }
-                                // $('#idselect').html(codigohtml);
+$(document).ready(function () {
 
-                            },
-                            error: function() {
-                                alert("ERROR Se ha producido un error en la comunicacion.");
-                            }
-                        })
-                    },
-                    cancelar: function () {
-                        $.alert('Cancelado!');
+    // Esta función es para cargar las horas disponibles en un php llamado damehoras.php en el formulario de selección
+    $(function () {
+        $.ajax({
+            url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr01/php/damehoras.php',
+            type: 'POST',
+            dataType: 'JSON',
+            retrieve: true,
+            data: {
+                'chequeo' : 'verdadero',
+            },
+
+            success: function (result) {
+                var html_code = "";
+                
+                // Aquí debo construir el contenido del formulario <select class="form-control" id="horas">
+                // Debe quedar algo así como <option value="int">Valor dado por php<option>
+                for (con = 0; con < result.length; con++) {
+
+                    if (con==0) {
+                        html_code += "<option value=''>" + result[con] + "</option>"
+                        
+                    } else {
+                        html_code += "<option value='" + result[con] + "'>" + result[con] + "</option>"
                     }
                 }
-            });
-        }
-    }
-});
 
-$(function() {
-    $.ajax({
-        url: 'http://localhost/PR1844_02CLASE/pr01/php/damehoras.php',
-        type: 'POST',
-        retrieve: true,
-        dataType: "JSON",
-        data:{
-            'chequeo': "meloinvento33",
-        },
-        success: function (viene_de_php){
+               $("#horas").html(html_code) //inyecto el código html dentro del formulario de selección
+            },
 
-            var codigohtml = '';
-            for (conta = 0; conta < viene_de_php.length; conta++) {
-                codigohtml +="<option value='"+conta+"'>"+viene_de_php[conta]+"</option>";
+            error: function (xhr) {
+                $.alert("Ocurrió un error: " + xhr.status + " " + xhr.statusText);
             }
-            $('#idselect').html(codigohtml);
-            // $( "#idselect" ).prepend( "<option value='-1' selected>Introduce las horas</option>" );
+        })
+    })
 
-        },
-        error: function() {
-            alert("ERROR Se ha producido un error en la comunicacion.");
+    // Esta función es para chequear los campos del formulario html y enviar luego esos datos por ajax a un php llamado procesa.php
+    $("#formoid").submit(function (event) {
+        /* detengo el submit por defecto de un formulario al clickear el botón submit */
+        event.preventDefault();
+        // console.log("Submit Detenido")
+        // console.log($("#formoid").attr("class"))
+        
+        // ****** Chequeo los campos del formulario
+        $("form").attr("class", "was-validated"); // Cambio el atributo class del formulario para que me muestre los campos que hace falta rellenar utilizando bootstrap
+
+        // Chequeo si los datos están completos para proceder a enviarlos por ajax
+        var fnombre= $("#fnombre").val()
+        var fdireccion= $("#fdireccion").val()
+        var horas= $("#horas").val()
+        var observaciones = $("#observaciones").val()
+        if (((fnombre === "") || (fdireccion === "") || (horas === ""))) {
+            $.alert("Introduzca los datos obligatorios")
+
+        } else {
+            console.log("entro en ajax")
+            $.ajax({
+                url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr01/php/procesa.php',
+                type: 'POST',
+                dataType: 'JSON',
+                retrieve: true,
+                data: {
+                    'fnombre' : fnombre, 
+                    'fdireccion' : fdireccion,
+                    'horas': horas,
+                    'observaciones': observaciones
+                },
+
+                success: function (result) {
+                    var contenido=""
+
+                    if (result.length == 3) {
+                        contenido = 'Nombre: ' + result[0] + '</br> \
+                                  Dirección: ' + result[1] + '</br>\
+                                  Entre las horas: ' + result[2] + ' </br>\
+                                  Observaciones: NINGUNA'
+
+                    } else {
+                        contenido = 'Nombre: ' + result[0] + '</br> \
+                                  Dirección: ' + result[1] + '</br>\
+                                  Entre las horas: ' + result[2] + '</br>\
+                                  Observaciones: ' + result[3]
+                    }
+                    
+                    $.confirm({
+                        title: 'Por favor chequee sus datos y confirme su pedido!',
+                        content: contenido,
+                        buttons: {
+                            'Confirme envío': function () {
+                                $.alert('Confirmed!');
+                            },
+                            cancel: function () {
+                                $.alert('Canceled!');
+                            },
+                            // somethingElse: {
+                            //     text: 'Something else',
+                            //     btnClass: 'btn-blue',
+                            //     keys: ['enter', 'shift'],
+                            //     action: function () {
+                            //         $.alert('Something else?');
+                            //     }
+                            // }
+                        }
+                    });                    
+                },
+
+                error: function (xhr) {
+                    $.alert("Ocurrió un error: " + xhr.status + " " + xhr.statusText);
+                }
+            })    
         }
     })
-});
+})
