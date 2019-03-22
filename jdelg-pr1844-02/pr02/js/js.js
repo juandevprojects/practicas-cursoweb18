@@ -3,7 +3,7 @@ $(document).ready(function () {
     // Esta función es para cargar las horas disponibles en un php llamado damehoras.php en el formulario de selección
     $(function () {
         $.ajax({
-            url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr01nuevo/php/damehoras.php',
+            url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr02/php/damehoras.php',
             type: 'POST',
             dataType: 'JSON',
             retrieve: true,
@@ -56,7 +56,7 @@ $(document).ready(function () {
         } else {
             console.log("entro en ajax")
             $.ajax({
-                url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr01nuevo/php/procesa.php',
+                url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr02/php/procesa.php',
                 type: 'POST',
                 dataType: 'JSON',
                 retrieve: true,
@@ -110,5 +110,42 @@ $(document).ready(function () {
                 }
             })    
         }
+    })
+
+    // Esta función es para que cuando el usuario salga del campo nombre, se realice una llamada Ajax a un programa php (compruebanombre.php) que verificará si el nombre comienza por J o por A, lo considerará válido; sino, mostrará una alerta en pantalla y pondrá el cursor (foco) en el campo nombre para que se modifique por otro válido.
+    $("#fnombre").blur(function () {
+        // $.alert("OJO! te saliste del campo nonmbre")
+        var fnombre = $("#fnombre").val()
+        $.ajax({
+            url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr02/php/compruebanombre.php',
+            type: 'POST',
+            dataType: 'JSON',
+            retrieve: true,
+            data: {
+                'fnombre': fnombre,                
+            },
+
+            success: function (result) {
+                if (result == "SN") {
+                    $.alert("Debe introducir el nombre");
+                } else if (result == "BIEN") {
+                // No hace nada, porque el nombre del formulario comienza por j o por a
+                } else {
+                    // $('#fnombre').focus();
+                    // $("#fnombre").get(0).addEventListener("focus", function () {}, false);
+                    
+                    $.alert("El nombre debe comenzar por J o por A");
+                    document.getElementById("fnombre").focus();
+                    // Busca en google set focus element after blur event javascript
+                }
+
+                               
+                
+            },
+            
+            error: function (xhr) {
+                $.alert("Ocurrió un error: " + xhr.status + " " + xhr.statusText);
+            }
+        })
     })
 })
