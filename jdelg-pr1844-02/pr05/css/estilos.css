@@ -1,0 +1,34 @@
+.card {
+    /* opacity: 0.85; */
+    background-color: rgba(255, 255, 255, 0.85);
+    /* background-color: rgba(255, 255, 0, 0.70); */
+}
+
+#contenedor {
+    height: 100vh;
+    /* background-image: url(../img/basket-312684.svg);
+    background-repeat: no-repeat;
+    background-position: right;     */
+    /* background-size: 16%; */
+}
+
+#izquierdo {
+    height: 100vh;
+    background-image: url(../img/diploma-1983725.svg);
+    background-repeat: repeat-y;
+    background-size: 70%;
+    background-position: center;
+}
+
+#derecho {
+    height: 100vh;
+    background-image: url(../img/diploma-1983725.svg);
+    background-repeat: repeat-y;
+    background-size: 70%;
+    background-position: center;
+
+}
+
+.btn {
+    background-color: rgba(105, 11, 11, 0.85);
+}
