@@ -246,14 +246,52 @@
 
          <!-- ********Este código php es necesario para grabar las observaciones de la incidencia hecha con el php constructor  en el dado caso que se acceda a la página un post hecho en -->
         <?php         
-        // echo $_POST['fincidencia']."</br>";
-        // echo $_POST['fsolicitante'];
+        // $fsolicitante= $_POST['fsolicitante'];
+        // $fambito= $_POST['fambito'];
+        // $faula= $_POST['faula'];
+        // $fcategoria= $_POST['fcategoria'];
+        // $fsubcat= $_POST['fsubcat'];
+        // $fincidencia= $_POST['fincidencia'];
+        // $prioridad= $_POST['fprioridad'];
+
+        // echo $fsolicitante."".$prioridad."".$fambito."".$faula."".$fcategoria."".$fsubcat."".$fincidencia;
+
 
         if ( empty($_POST) ) { 
             echo '<div id="controlador" hidden>3</div>'; // Este es un controlador para javascript
             // no hago nada
         } else {
             include_once 'php/conexion.php'; // Agrego todas las credenciales de la base de datos
+
+             if ( isset($_POST['fsolicitante']) ){  
+                 $fsolicitante= $_POST['fsolicitante'];
+             }
+
+             if ( isset($_POST['fambito']) ){  
+                 $fambito= $_POST['fambito'];
+             }
+
+             if ( isset($_POST['faula']) ){  
+                 $faula= $_POST['faula'];
+             }
+
+             if ( isset($_POST['fcategoria']) ){  
+                 $fcategoria= $_POST['fcategoria'];
+             }
+
+             if ( isset($_POST['fsubcat']) ){  
+                 $fsubcat= $_POST['fsubcat'];
+             }
+
+             if ( isset($_POST['fincidencia']) ){  
+                 $fincidencia= $_POST['fincidencia'];
+             }
+
+             if ( isset($_POST['fprioridad']) ){  
+                 $prioridad= $_POST['fprioridad'];
+             }           
+
+            // echo $fsolicitante."".$prioridad."".$fambito."".$faula."".$fcategoria."".$fsubcat."".$fincidencia;
 
             # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
             $conn = mysqli_connect($host, $usuario, $clave, $db);                                        
@@ -272,7 +310,29 @@
                     $sql = 'UPDATE '.$tabla.' SET observaciones=(?) WHERE id='.intval($_POST['fincidencia']); // Esta es para insertar la incidencia en la tabla incidencia
                         
                     # Preparo los datos que voy a insertar de la incidencia
-                    $uno= $_POST['fobservaciones'];   
+                    if (isset($_POST['fresolucion'])) {
+                        date_default_timezone_set('UTC');
+
+                        # Preparo la query que quiero ejecutar
+                        $sql= 'SELECT observaciones FROM '.$tabla.' WHERE id='.$_POST['fincidencia'];
+                        # Ejecuto la query
+                        $result= mysqli_query($conn, $sql); 
+
+                        while( $fila= mysqli_fetch_array($result) ) {
+                            $observacion_vieja= $fila['observaciones'];           
+                        };                         
+                        // Libero la query
+                        mysqli_free_result($result);  
+
+                        // Establezco lo que voy a actualizar el campo observaciones    
+                        // $uno= $_POST['fobservaciones']."</br>&nbsp;&nbsp;&nbsp;&nbsp;".date(DATE_RFC2822)." ".$observacion_vieja;
+
+                        $uno= "Modificada";
+
+                    }else {
+                        // $uno= date(DATE_RFC2822)." ".$_POST['fobservaciones'];  
+                        $uno= "NO Modificada"; 
+                    }
                           
 
                     // # Preparo la consulta junto con los parámetros que voy a enviar
@@ -296,23 +356,53 @@
                     # Envío correo de confirmación al solicitante 
                     $email_solicitante= dame_email("email_solicitante", "solicitantes", $_POST['fsolicitante'], $conn); //Obtengo el email del solicitante
                     $email_responsable= dame_email("email_responsable", "configuracion", "1", $conn); //Obtengo el email del responsable de informática
+               
+
+                    if (isset($_POST['fresolucion'])) {
+
+                        // Envío el correo al solicitante
+                        $destinatario = $email_solicitante;
+                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
+                        $mensaje = "Hola, su incidencia ha sido atendida por el responsable de informática";
+                        // mail($destinatario, $asunto, $mensaje);
+
+                        // Envío el correo al administrador del sistema
+                         # Preparo la query que quiero ejecutar
+                        $sql= 'SELECT observaciones FROM '.$tabla.' WHERE id='.$_POST['fincidencia'];
+                        # Ejecuto la query
+                        $result= mysqli_query($conn, $sql); 
+
+                        while( $fila= mysqli_fetch_array($result) ) {
+                            $observacion_vieja= $fila['observaciones'];             
+                        };                     
+                        // Libero la query
+                        mysqli_free_result($result);  
+
+                        $destinatario = $email_responsable;
+                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
+                        $mensaje= "La incidencia número ".$_POST['fincidencia']." se ha analizado y finalizado con las siguientes observaciones \" ".$observacion_vieja." \"";
+                        // mail($destinatario, $asunto, $mensaje);                       
+
+                    } else{
+                        // Envío el correo al solicitante
+                        $destinatario = $email_solicitante;
+                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
+                        $mensaje = "Hola, su incidencia ha sido atendida por el responsable de informática";
+                        // mail($destinatario, $asunto, $mensaje);
+
+                        // Envío el correo al administrador del sistema
+                        $destinatario = $email_responsable;
+                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
+                        $mensaje= "La incidencia número ".$_POST['fincidencia']." se ha analizado con la siguiente observación ".$_POST['fobservaciones']." Por favor finalice y cierre la incidencia http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr07/php/resolucion_incidencia.php?id_solicitante=".$fsolicitante."&id_ambito=".$fambito."&id_aula=".$faula."&id_categoria=".$fcategoria."&id_sub_cat=".$fsubcat."&id_prioridad=".$prioridad."&id_incidencia=".$fincidencia;
+                        // mail($destinatario, $asunto, $mensaje);                             
+
+
+                    }
+
 
                     // #Cierro la conexión
                     mysqli_close($conn);
 
-                    // Envío el correo al solicitante
-                    $destinatario = $email_solicitante;
-                    $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
-                    $mensaje = "Hola, su incidencia ha sido atendida por el responsable de informática";
-                    mail($destinatario, $asunto, $mensaje);
-
-                    // Envío el correo al administrador del sistema
-                    $destinatario = $email_responsable;
-                    $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
-                    $mensaje= "La incidencia número ".$_POST['fincidencia']." se ha analizado con la siguiente observación ".$_POST['fobservaciones']." Por favor finalice y cierre la incidencia";
-                    // $mensaje = "Esta es una confirmación de la incidencia hecha en el problema 5 enviada desde PHP http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr06/php/atencion_incidencia.php?id_solicitante=".$fsolicitante."&id_ambito=".$fambito."&id_aula=".$faula."&id_categoria=".$fcategoria."&id_sub_cat=".$fsubcat."&id_prioridad=".$prioridad."&id_incidencia=".$nuevo_id;
-                    mail($destinatario, $asunto, $mensaje);
-                        
                     echo '<div id="controlador" hidden>1</div>'; // Este es un controlador para javascript
 
                 } else {
@@ -320,6 +410,9 @@
 
                 }
             }
+
+
+
         }
 
 
