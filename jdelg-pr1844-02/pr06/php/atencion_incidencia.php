@@ -46,7 +46,7 @@
                         //    echo "El get está vacío";
                        } else {
                             //    echo "El saludo enviado en el get es {$_GET['saludo']}";
-                            include_once '../php/conexion.php'; // Agrego todas las credenciales de la base de datos
+                            include_once '../../../../conexion.php'; // Agrego todas las credenciales de la base de datos
 
                             # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
                             $conn = mysqli_connect($host, $usuario, $clave, $db);                                        

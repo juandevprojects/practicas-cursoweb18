@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>pr1844-02-PR06 Atención de Incidencias</title>
+    <title>pr1844-02-PR07 Atención de Incidencias</title>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
@@ -46,7 +46,7 @@
                         //    echo "El get está vacío";
                        } else {
                             //    echo "El saludo enviado en el get es {$_GET['saludo']}";
-                            include_once '../php/conexion.php'; // Agrego todas las credenciales de la base de datos
+                            include_once '../../../../conexion.php'; // Agrego todas las credenciales de la base de datos
 
                             # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
                             $conn = mysqli_connect($host, $usuario, $clave, $db);                                        
@@ -158,8 +158,13 @@
                                     <div class="invalid-feedback">Debe escribir las observaciones de la incidencia</div>
                                 </div>
 
-                                <textarea name="fincidencia"  hidden ><?php echo $_GET['id_incidencia']; ?></textarea>
                                 <textarea name="fsolicitante" hidden ><?php echo $_GET['id_solicitante']; ?></textarea>
+                                <textarea name="fambito" hidden ><?php echo $_GET['id_ambito']; ?></textarea>
+                                <textarea name="faula" hidden ><?php echo $_GET['id_aula']; ?></textarea>
+                                <textarea name="fcategoria" hidden ><?php echo $_GET['id_categoria']; ?></textarea>
+                                <textarea name="fsubcat" hidden ><?php echo $_GET['id_sub_cat']; ?></textarea>
+                                <textarea name="fprioridad" hidden ><?php echo $_GET['id_prioridad']; ?></textarea>
+                                <textarea name="fincidencia"  hidden ><?php echo $_GET['id_incidencia']; ?></textarea>
                         </fieldset>
 
                         <button type="submit" class="btn btn-dark">Enviar observaciones</button>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>pr1844-02-PR05_0</title>
+    <title>pr1844-02-PR07 Notificación de incidencias</title>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
@@ -47,7 +47,7 @@
                                 <select class="form-control" id="fsolicitante" required>
                                     <!-- ejecuto código php donde voy a solicitar a la base de datos todos los solicitantes que hay -->
                                     <?php
-                                        include_once 'php/conexion.php'; // Agrego todas las credenciales de la base de datos
+                                        include_once '../../../conexion.php'; // Agrego todas las credenciales de la base de datos
                                         $tabla= 'solicitantes'; //Establezco la tabla que deseo trabajar de la base de datos
 
                                         # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
@@ -261,7 +261,7 @@
             echo '<div id="controlador" hidden>3</div>'; // Este es un controlador para javascript
             // no hago nada
         } else {
-            include_once 'php/conexion.php'; // Agrego todas las credenciales de la base de datos
+            include_once '../../../conexion.php'; // Agrego todas las credenciales de la base de datos
 
              if ( isset($_POST['fsolicitante']) ){  
                  $fsolicitante= $_POST['fsolicitante'];
@@ -314,9 +314,9 @@
                         date_default_timezone_set('UTC');
 
                         # Preparo la query que quiero ejecutar
-                        $sql= 'SELECT observaciones FROM '.$tabla.' WHERE id='.$_POST['fincidencia'];
+                        $sql2= 'SELECT observaciones FROM '.$tabla.' WHERE id='.$_POST['fincidencia'];
                         # Ejecuto la query
-                        $result= mysqli_query($conn, $sql); 
+                        $result= mysqli_query($conn, $sql2); 
 
                         while( $fila= mysqli_fetch_array($result) ) {
                             $observacion_vieja= $fila['observaciones'];           
@@ -325,13 +325,14 @@
                         mysqli_free_result($result);  
 
                         // Establezco lo que voy a actualizar el campo observaciones    
-                        // $uno= $_POST['fobservaciones']."</br>&nbsp;&nbsp;&nbsp;&nbsp;".date(DATE_RFC2822)." ".$observacion_vieja;
+                        $uno= date(DATE_RFC2822)." ".$_POST['fobservaciones']."</br>&nbsp;&nbsp;&nbsp;&nbsp;". " " .$observacion_vieja;
 
-                        $uno= "Modificada";
+                        // $uno= "Modificada";
+                        // echo $uno;
 
                     }else {
-                        // $uno= date(DATE_RFC2822)." ".$_POST['fobservaciones'];  
-                        $uno= "NO Modificada"; 
+                        $uno= date(DATE_RFC2822)." ".$_POST['fobservaciones'];  
+                        // $uno= "NO Modificada"; 
                     }
                           
 
@@ -364,7 +365,7 @@
                         $destinatario = $email_solicitante;
                         $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
                         $mensaje = "Hola, su incidencia ha sido atendida por el responsable de informática";
-                        // mail($destinatario, $asunto, $mensaje);
+                        mail($destinatario, $asunto, $mensaje);
 
                         // Envío el correo al administrador del sistema
                          # Preparo la query que quiero ejecutar
@@ -381,20 +382,20 @@
                         $destinatario = $email_responsable;
                         $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
                         $mensaje= "La incidencia número ".$_POST['fincidencia']." se ha analizado y finalizado con las siguientes observaciones \" ".$observacion_vieja." \"";
-                        // mail($destinatario, $asunto, $mensaje);                       
+                        mail($destinatario, $asunto, $mensaje);                       
 
                     } else{
                         // Envío el correo al solicitante
                         $destinatario = $email_solicitante;
                         $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
                         $mensaje = "Hola, su incidencia ha sido atendida por el responsable de informática";
-                        // mail($destinatario, $asunto, $mensaje);
+                        mail($destinatario, $asunto, $mensaje);
 
                         // Envío el correo al administrador del sistema
                         $destinatario = $email_responsable;
                         $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
                         $mensaje= "La incidencia número ".$_POST['fincidencia']." se ha analizado con la siguiente observación ".$_POST['fobservaciones']." Por favor finalice y cierre la incidencia http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr07/php/resolucion_incidencia.php?id_solicitante=".$fsolicitante."&id_ambito=".$fambito."&id_aula=".$faula."&id_categoria=".$fcategoria."&id_sub_cat=".$fsubcat."&id_prioridad=".$prioridad."&id_incidencia=".$fincidencia;
-                        // mail($destinatario, $asunto, $mensaje);                             
+                        mail($destinatario, $asunto, $mensaje);                      
 
 
                     }

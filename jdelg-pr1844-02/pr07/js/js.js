@@ -48,7 +48,7 @@ $(document).ready(function () {
         } else {
             console.log("entro en ajax")
             $.ajax({
-                url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr06/php/procesa.php',
+                url: 'http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr07/php/procesa.php',
                 type: 'POST',
                 dataType: 'JSON',
                 retrieve: true,
@@ -63,8 +63,37 @@ $(document).ready(function () {
                 },
 
                 success: function (result) {
-                    $.alert("El resultado es: "+result)
-                    
+                    console.log(result)
+                    if (result.resultado=="1"){
+                        $.alert(result.mensaje);
+                    } else if (result.resultado == "2"){
+                        $.alert(result.mensaje);
+                    } else if (result.resultado == "3") {
+                        $.alert({
+                            title: 'Incidencia procesada y enviada al correo: ' + result.email_solicitante,
+                            content: '<p>Datos de la incidencia: ' + result.no_incidencia + '</p>\
+                                      <p> Solicitante: '+ result.nombre+'</p>\
+                                      <p> Ambito: '+ result.ambito +' </p>\
+                                      <p> Aula: '+ result.aula +' </p>\
+                                      <p> Categoría: '+ result.categoria +' </p>\
+                                      <p> Subcategoría: '+ result.subcategoria +' </p>\
+                                      <p> Prioridad: '+ result.prio +' </p>\
+                                      <p> Incidencia: '+ result.descripcion +' </p>'                                                            
+                                        
+                        });
+                    } else if (result.resultado == "4") {
+                        $.alert(result.mensaje);
+                    } else if (result.resultado == "5") {
+                        $.alert(result.mensaje);
+                    } else if (result.resultado == "6") {
+                        $.alert(result.mensaje);
+                    } else if (result.resultado == "7") {
+                        $.alert(result.mensaje);
+                    } else if(result.resultado == "8") {
+                        $.alert(result.mensaje);
+                    }else {
+                        $.alert("Respuesta Desconocida" + result.mensaje);
+                    }                                   
                     
                 },
 
@@ -103,6 +132,12 @@ $(document).ready(function () {
 
         }
     })
+
+
+
+    
+
+
 
     // Esta función es para que cuando el usuario salga del campo nombre, se realice una llamada Ajax a un programa php (compruebanombre.php) que verificará si el nombre comienza por J o por A, lo considerará válido; sino, mostrará una alerta en pantalla y pondrá el cursor (foco) en el campo nombre para que se modifique por otro válido.
     // $("#fnombre").on('blur', function () {

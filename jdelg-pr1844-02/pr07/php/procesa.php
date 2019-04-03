@@ -1,13 +1,11 @@
 <?php
-    include_once '../php/conexion.php'; // Agrego todas las credenciales de la base de datos
-
     
-    
-   
-
     if ( empty($_POST) ) { 
+        
  
     } else {
+        include_once '../php/config_mail.php'; // Agrego todas las funciones para enviar email
+        include_once 'funciones.php'; // Agrego funciones varias
 
         $fsolicitante= $_POST['fsolicitante'];
         $fambito= $_POST['fambito'];
@@ -19,7 +17,7 @@
         
         if ((($fsolicitante == '') || ($fambito == '') || ($faula == '') || ($fcategoria == '') || ($fsubcat == '') || ($fincidencia == '') || ($prioridad == ''))) {
             // No devuelvo nada, entonces el ajax dará error de comunicación  
-            echo json_encode( array("Hay un gran error"));
+            echo json_encode(array('resultado'=>'1', 'mensaje'=>'Incidencia no procesada. El formulario tiene campos incompletos'));
         } else {
             // echo json_encode( array("Exitoso"));
 
@@ -28,11 +26,14 @@
 
             # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
             $conn = mysqli_connect($host, $usuario, $clave, $db);                                        
-            mysqli_set_charset($conn,"utf8"); // Establezco el juego de caracteres de la base de datos
+            mysqli_set_charset($conn,"utf8"); // Establezco el juego de caracteres de la base de datos          
 
             if (mysqli_connect_errno()) {
-                echo json_encode( array("No pudo conectarse a la base de datos"));
+                echo json_encode(array('resultado'=>'2', 'mensaje'=>'Incidencia no procesada. No pudo conectarse a la base de datos'));                
             } else {
+                date_default_timezone_set('UTC'); // Establezco el uso horario para utilizar funciones de fecha
+                $fincidencia= filtrar_formulario($fincidencia, $conn); // filtro la entrada del formulario textarea para que no me rompan el código.
+
                 # Preparo la sentencia con los comodines ?  para insertar datos de la incidencia              
                 $sql = 'INSERT INTO '.$tabla.' (id_solicitante, 
                                                id_ambito, 
@@ -50,51 +51,69 @@
                 $cuatro= intval($fcategoria);
                 $cinco= intval($fsubcat);
                 $seis= intval($prioridad);
+                $siete= date(DATE_RFC2822)." ".$fincidencia;
                
                 // # Preparo la consulta junto con los parámetros que voy a enviar
                 $pre = mysqli_prepare($conn, $sql);
 
                 // # indico los datos a reemplazar con su tipo
-                mysqli_stmt_bind_param($pre, "iiiiiis", $uno, $dos, $tres, $cuatro, $cinco, $seis, $fincidencia);
+                mysqli_stmt_bind_param($pre, "iiiiiis", $uno, $dos, $tres, $cuatro, $cinco, $seis, $siete);
 
-                // # Ejecuto la consulta
-                mysqli_stmt_execute($pre);
+                # Ejecuto la consulta              
+                
+                if (mysqli_stmt_execute($pre)) {
+                    // # PASO OPCIONAL (SOLO PARA CONSULTAS DE INSERCIÓN):
+                    // # Obtener el ID del registro insertado                    
+                    $nuevo_id = mysqli_insert_id($conn);
 
-                // # PASO OPCIONAL (SOLO PARA CONSULTAS DE INSERCIÓN):
-                // # Obtener el ID del registro insertado
-                $nuevo_id = mysqli_insert_id($conn);
+                    // Envío el email de notificación al responsable de informática y al solicitante de la incidencia
+                    $error_email= mail_atencion_responsable($nuevo_id, $conn );
+                  
+                    // Chequeo si envió el correo de notificación tanto al solicitante de la incidencia como al responsable de informática
+                    if (isset($error_email['resultado'])){
 
+                        if ($error_email['resultado']['responsable']==='BIEN'){
+                            if ($error_email['resultado']['solicitante']==='BIEN') {
+                                echo json_encode(array('resultado'=>'3', 
+                                'mensaje'=>'Incidencia procesada y email enviado al responsable de informática, pero NO al solicitante de la incidencia', 
+                                'no_incidencia'=> $nuevo_id,
+                                'nombre'=> $error_email['solicitante'], 
+                                'email_solicitante'=> $error_email['email_solcitante'],
+                                'ambito'=> $error_email['ambito'], 
+                                'aula'=> $error_email['aula'], 
+                                'categoria'=> $error_email['categoria'], 
+                                'subcategoria'=> $error_email['sub_cat'], 
+                                'prio'=> $error_email['prioridad'], 
+                                'descripcion'=>  $error_email['incidencia'] ));                             
+                            } else {
+                                echo json_encode(array('resultado'=>'4', 'mensaje'=>'Incidencia procesada y email enviado al responsable de informático pero NO al solicitante de la incidencia'));  
+                                                         
+                            }
+                        } elseif ($error_email['resultado']['responsable']==='MAL') {
+                            if ($error_email['resultado']['solicitante']==='BIEN') {
+                                echo json_encode(array('resultado'=>'5', 'mensaje'=>'Incidencia procesada y email enviado al solicitante de la incidencia, pero NO al responsable de informática'));                            
+                            } else {
+                                echo json_encode(array('resultado'=>'6', 'mensaje'=>'Incidencia procesada, pero no se pudo enviar el email ni al responsable de informática ni al solicitante de la incidencia'));   
+                            } // Acomodar estos if para que me de error bien en ajax si la función de mail falla
+                        } elseif ($error_email['resultado']==='BAD_SQL'){
+                            echo json_encode(array('resultado'=>'7', 'mensaje'=>'Incidencia procesada, pero no se envió el email porque a la tabla incidencia le faltan campos')); 
+                        } else {
+                            echo json_encode(array('resultado'=>'8', 'mensaje'=>'Incidencia procesada, y esta es la notificación que viene después de BAD_SQL')); 
+                        }
+                         
+                    } else {
+                        echo json_encode(array('resultado'=>'9', 'mensaje'=>'Incidencia procesada, pero no se evió el mail porque la función de envío de e-mail no respondió')); 
+                    }   
+                
+                }
+                
                 // # Cierro la consulta 
-                mysqli_stmt_close($pre);
-                
-                # Envío correo de confirmación al solicitante 
-                $email_solicitante= dame_email("email_solicitante", "solicitantes", $fsolicitante, $conn); //Obtengo el email del solicitante
-                $email_responsable= dame_email("email_responsable", "configuracion", "1", $conn); //Obtengo el email del responsable de informática
-
+                mysqli_stmt_close($pre);              
                 // #Cierro la conexión
-                mysqli_close($conn);
-
-                // Envío el correo al solicitante
-                $destinatario = $email_solicitante;
-                $asunto = "Confirmación de incidencia desde PHP";
-                $mensaje = "Esta es una confirmación de la incidencia hecha en el problema 5 enviada desde PHP";
-                mail($destinatario, $asunto, $mensaje);
-
-                // Envío el correo al administrador del sistema
-                $destinatario = $email_responsable;
-                $asunto = "Confirmación de incidencia desde PHP";                
-                $mensaje = "Esta es una confirmación de la incidencia hecha en el problema 5 enviada desde PHP http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr06/php/atencion_incidencia.php?id_solicitante=".$fsolicitante."&id_ambito=".$fambito."&id_aula=".$faula."&id_categoria=".$fcategoria."&id_sub_cat=".$fsubcat."&id_prioridad=".$prioridad."&id_incidencia=".$nuevo_id;
-                mail($destinatario, $asunto, $mensaje);
-
-
-                // Construye el url con estos parámetros id_solicitante=$fsolicitante id_ambito=$fambito id_aula=$faula id_categoria=$fcategoria id_sub_cat=$fsubcat id_prioridad=$prioridad id_descripcion=$fincidencia     
-                
-
-                echo json_encode(array("Exitoso"));
-                // $mensaje= 'El registro insertado tiene la id: '.$nuevo_id;
-                // echo json_encode( array($mensaje));
+                mysqli_close($conn);        
+                     
+                                           
             }                    
         }
     }    
-
 ?>

@@ -47,7 +47,7 @@
                                 <select class="form-control" id="fsolicitante" required>
                                     <!-- ejecuto código php donde voy a solicitar a la base de datos todos los solicitantes que hay -->
                                     <?php
-                                        include_once 'php/conexion.php'; // Agrego todas las credenciales de la base de datos
+                                        include_once '../../../../conexion.php'; // Agrego todas las credenciales de la base de datos
                                         $tabla= 'solicitantes'; //Establezco la tabla que deseo trabajar de la base de datos
 
                                         # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect

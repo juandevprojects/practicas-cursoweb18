@@ -1,5 +1,5 @@
 <?php
-    include_once '../php/conexion.php'; // Agrego todas las credenciales de la base de datos
+    include_once '../../../../conexion.php'; // Agrego todas las credenciales de la base de datos
 
     function dame_email($campo, $tabla, $id_solicitante, $conn) {
         # Preparo la sentencia con los comodines ?  para obtener 
