@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-03-2019 a las 19:58:22
+-- Tiempo de generación: 10-04-2019 a las 19:14:50
 -- Versión del servidor: 10.1.37-MariaDB
 -- Versión de PHP: 7.3.0
 
@@ -116,15 +116,9 @@ CREATE TABLE `incidencias` (
   `id_categoria` tinyint(4) NOT NULL,
   `id_subcategoria` tinyint(4) NOT NULL,
   `prioridad` tinyint(4) NOT NULL,
-  `descrip_incidencia` blob NOT NULL
+  `descrip_incidencia` blob NOT NULL,
+  `observaciones` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
-
---
--- Volcado de datos para la tabla `incidencias`
---
-
-INSERT INTO `incidencias` (`id`, `id_solicitante`, `id_ambito`, `id_aula`, `id_categoria`, `id_subcategoria`, `prioridad`, `descrip_incidencia`) VALUES
-(1, 3, 3, 1, 4, 3, 0, 0x51756520736520796f2c206f7472612076657a2e2070756573206e6f207365);
 
 -- --------------------------------------------------------
 
@@ -143,7 +137,7 @@ CREATE TABLE `solicitantes` (
 --
 
 INSERT INTO `solicitantes` (`id`, `nombre_solicitante`, `email_solicitante`) VALUES
-(1, 'Juan Delgado', 'juand@mycompany.com'),
+(1, 'Juan Delgado', 'mat633@outlook.es'),
 (2, 'Pedro Perez', 'pedro@queseyo.com'),
 (3, 'Alejandro Mulatera', 'amulatero@yahoo.es');
 
@@ -246,7 +240,7 @@ ALTER TABLE `configuracion`
 -- AUTO_INCREMENT de la tabla `incidencias`
 --
 ALTER TABLE `incidencias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitantes`
