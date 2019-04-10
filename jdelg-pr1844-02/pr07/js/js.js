@@ -62,6 +62,8 @@ $(document).ready(function () {
                     'prioridad': prioridad,
                 },
 
+                // timeout: 6000, // sets timeout to 6 seconds 
+
                 success: function (result) {
                     console.log(result)
                     if (result.resultado=="1"){
@@ -70,15 +72,15 @@ $(document).ready(function () {
                         $.alert(result.mensaje);
                     } else if (result.resultado == "3") {
                         $.alert({
-                            title: 'Incidencia procesada y enviada al correo: ' + result.email_solicitante,
-                            content: '<p>Datos de la incidencia: ' + result.no_incidencia + '</p>\
-                                      <p> Solicitante: '+ result.nombre+'</p>\
-                                      <p> Ambito: '+ result.ambito +' </p>\
-                                      <p> Aula: '+ result.aula +' </p>\
-                                      <p> Categoría: '+ result.categoria +' </p>\
-                                      <p> Subcategoría: '+ result.subcategoria +' </p>\
-                                      <p> Prioridad: '+ result.prio +' </p>\
-                                      <p> Incidencia: '+ result.descripcion +' </p>'                                                            
+                            title: 'Incidencia creada y enviada al correo: ' + result.email_solicitante,
+                            content: '<p>Datos de la incidencia ' + result.no_incidencia + '</p>\
+                                      <p>Solicitante: '+ result.nombre+'</p>\
+                                      <p>Ambito: '+ result.ambito +' </p>\
+                                      <p>Aula: '+ result.aula +' </p>\
+                                      <p>Categoría: '+ result.categoria +' </p>\
+                                      <p>Subcategoría: '+ result.subcategoria +' </p>\
+                                      <p>Prioridad: '+ result.prio +' </p>\
+                                      <p>Incidencia: '+ result.descripcion +' </p>'                                                            
                                         
                         });
                     } else if (result.resultado == "4") {
@@ -91,7 +93,9 @@ $(document).ready(function () {
                         $.alert(result.mensaje);
                     } else if(result.resultado == "8") {
                         $.alert(result.mensaje);
-                    }else {
+                    } else if (result.resultado == "9") {
+                        $.alert(result.mensaje);
+                    } else {
                         $.alert("Respuesta Desconocida" + result.mensaje);
                     }                                   
                     
@@ -100,6 +104,18 @@ $(document).ready(function () {
                 error: function (xhr) {
                     $.alert("Ocurrió un error: " + xhr.status + " " + xhr.statusText);
                 }
+
+                // error: function (e) {
+                //     if (e.statusText === 'timeout') {
+                //         console.log('Tiempo de espera agotado');
+                //     }
+                //     else {
+                //         // console.log(e.statusText);
+                //         console.log("que se yo");
+
+                //     }
+                // },
+                // timeout: 20000
             })    
         }
     })
@@ -125,12 +141,54 @@ $(document).ready(function () {
         console.log($("#controlador").text())
 
         if ($("#controlador").text() == "1" ) {
-            $.alert("Las observaciones se han guardado en la base de datos exitosamente")
-        } else if ($("#controlador") == "2") {
-            $.alert("No se guardaron las observaciones, porque no conectó  a la base de datos")
-        } else {
+            $.alert("No se guardaron las observaciones, porque no conectó a la base de datos")
+        } else if ($("#controlador").text() == "2") {
+            if ($("#cont_accion").text() == 'resolucion') {
+                $.alert({
+                    title: 'Incidencia resuelta y enviada al correo: ' + $("#cont_email_solicitante").text(),
+                    content: '<p>Datos de la incidencia ' + $("#cont_no_incidencia").text() + '</p>\
+                          <p> Solicitante: '+ $("#cont_nombre").text() + ' </p>\
+                          <p> Ambito: '+ $("#cont_ambito").text() + ' </p>\
+                          <p> Aula: '+ $("#cont_aula").text() + ' </p>\
+                          <p> Categoría: '+ $("#cont_categoria").text() + ' </p>\
+                          <p> Subcategoría: '+ $("#cont_subcategoria").text() + ' </p>\
+                          <p> Prioridad: '+ $("#cont_prio").text() + ' </p>\
+                          <p> Incidencia: '+ $("#cont_descripcion").text() + ' </p>\
+                          <p> Observaciones: '+ $("#cont_observaciones").text() + ' </p>'
+                });    
 
+            } else {
+                $.alert({
+                    title: 'Incidencia atendida y enviada al correo: ' + $("#cont_email_solicitante").text(),
+                    content: '<p>Datos de la incidencia ' + $("#cont_no_incidencia").text() + '</p>\
+                          <p> Solicitante: '+ $("#cont_nombre").text() + ' </p>\
+                          <p> Ambito: '+ $("#cont_ambito").text() + ' </p>\
+                          <p> Aula: '+ $("#cont_aula").text() + ' </p>\
+                          <p> Categoría: '+ $("#cont_categoria").text() + ' </p>\
+                          <p> Subcategoría: '+ $("#cont_subcategoria").text() + ' </p>\
+                          <p> Prioridad: '+ $("#cont_prio").text() + ' </p>\
+                          <p> Incidencia: '+ $("#cont_descripcion").text() + ' </p>\
+                          <p> Observaciones: '+ $("#cont_observaciones").text() + ' </p>'
+
+                });    
+
+            }
+
+
+
+
+
+
+                    
+        } else if ($("#controlador").text() == "3") {
+            $.alert($("#cont_mensaje").text())
+        } else if ($("#controlador").text() == "4") {
+            $.alert($("#cont_mensaje").text())
+        } else{
+            // $.alert("No hizo ninguna categoría de controlador")
         }
+
+        // Esto está listo solo falta terminar los mensajes de error
     })
 
 

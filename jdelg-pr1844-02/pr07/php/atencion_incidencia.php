@@ -34,22 +34,25 @@
             <div class="card col-md-8 col-lg-8">
                 <div class="card-header">
                     <!-- <h1>SUPERMERCADOS FACILITO</h1> -->
-                    Notificación de incidencias
+                    Atención de incidencias
                 </div>
 
                 <div class="card-body">    
-                    <h4 class="card-title">Datos de la incidencia</h4>
+                    <h4 class="card-title">Datos de la incidencia <?php echo ''.isset($_GET['id_incidencia']) ?  $_GET['id_incidencia'] : ''; ?></h4>
 
-                    <?php                        
+                    <?php           
+                             
 
                        if ( empty($_GET) ) {
                         //    echo "El get está vacío";
+                        
                        } else {
                             //    echo "El saludo enviado en el get es {$_GET['saludo']}";
                             include_once '../../../../conexion.php'; // Agrego todas las credenciales de la base de datos
+                            include_once 'funciones.php';
 
                             # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
-                            $conn = mysqli_connect($host, $usuario, $clave, $db);                                        
+                            $conn = mysqli_connect($host, $usuario, $clave, $db);                                  
                             mysqli_set_charset($conn,"utf8"); // Establezco el juego de caracteres de la base de datos
 
                             if (mysqli_connect_errno()) {
@@ -57,52 +60,48 @@
                             } else {
 
                                 # Si el GET existe y la BD conectó entonces chequeo cada variable para que no me rompan el código 
-                                if ( isset($_GET['id_solicitante']) ){                            
-                                    $nombre_solicitante= dame_un_campo("nombre_solicitante", "solicitantes", $_GET['id_solicitante'], $conn);
-                                }
-
-                                if ( isset($_GET['id_ambito']) ){
-                                    $nombre_ambito= dame_un_campo("ambito", "ambitos", $_GET['id_ambito'], $conn);      
-                                }
-
-                               
-                                if ( isset($_GET['id_aula']) ){
-                                    $nombre_aula= dame_un_campo("aula", "aulas", $_GET['id_aula'], $conn);      
-                                }
-
-                                if ( isset($_GET['id_categoria']) ){
-                                    $nombre_categoria= dame_un_campo("categoria", "categorias", $_GET['id_categoria'], $conn);
-                                }
                                 
-                                if ( isset($_GET['id_sub_cat']) ){
-                                    $nombre_subcat= dame_un_campo("sub_categoria", "sub_categorias", $_GET['id_sub_cat'], $conn);
-                                }
 
-                                if ( isset($_GET['id_prioridad']) ){
-                                   if ($_GET['id_prioridad'] == 0) {
-                                       $nombre_prioridad= "baja";
-                                   } elseif ($_GET['id_prioridad'] == 1) {
-                                       $nombre_prioridad= "ALTA";
-                                   } else {
+                                if ( isset($_GET['id_incidencia']) ){  
+                                    // Obtengo los detalles de la incidencia                          
+                                    $incidencia= dame_una_incidencia($_GET['id_incidencia'], $conn);
 
-                                   }
-                                }
+                                    // Obtengo los id's de cada campo de la incidencia
+                                    $id_solicitante= $incidencia['id_solicitante'];
+                                    $id_ambito= $incidencia['id_ambito'];
+                                    $id_aula= $incidencia['id_aula'];
+                                    $id_categoria= $incidencia['id_categoria'];
+                                    $id_subcategoria= $incidencia['id_subcategoria']; 
+                                    $prioridad= $incidencia['prioridad'];                              
 
-                                if ( isset($_GET['id_incidencia']) ){
-                                    $descrip_incidencia= dame_un_campo("descrip_incidencia", "incidencias", $_GET['id_incidencia'], $conn);
+                                    // Después de obtener los id's de todos los campos de la incidencia busco sus nombre para escribir el correo
+                                    $nombre= dame_un_campo("nombre_solicitante", "solicitantes", $id_solicitante, $conn);
+                                    $ambito= dame_un_campo("ambito", "ambitos", $id_ambito, $conn);
+                                    $aula= dame_un_campo("aula", "aulas", $id_aula, $conn);
+                                    $categoria= dame_un_campo("categoria", "categorias", $id_categoria, $conn);
+                                    $subcategoria= dame_un_campo("sub_categoria", "sub_categorias", $id_subcategoria, $conn);
 
-                                    // $descrip_incidencia= $_GET['id_incidencia'];
+                                    // Chequeo si la incidencia tiene todos sus campos full
+                                    if (isset($nombre) && isset($ambito) && isset($aula) && isset($categoria) && isset($subcategoria) && isset($prioridad) && isset($incidencia['descrip_incidencia']) ) {
+                                        // Le doy un valor categórico a la prioridad
+                                        if ($prioridad==1){
+                                            $prio= "ALTA";
+                                        } elseif ($prioridad==0){
+                                            $prio= "baja";
+                                        } else {
+                                            $prio= "Sin prioridad";
+                                        }
 
-                                    // Aquí debo sustituir por el id de la incidencia
+                                        $descripcion= $incidencia['descrip_incidencia'];
+                                        $observaciones= $incidencia['observaciones'];
+                                    }
+
                                 } else {
-                                    $descrip_incidencia= "no hay incidencia";
-                                }
+                                    // No hago nada
+                                }                             
                  
                                 // Cierro la conexión
-                                mysqli_close($conn); 
-
-
-                                // http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr06/php/atencion_incidencia.php?id_solicitante=1&id_ambito=3&id_aula=2&id_categoria=1&id_sub_cat=3&id_prioridad=0&id_incidencia=1
+                                mysqli_close($conn);                               
                                 
                             }                                   
                        }
@@ -111,37 +110,37 @@
                     <table class="table">
                         <tr>
                             <td>Solicitante:</td>
-                            <td><?php echo ''.isset($nombre_solicitante) ?  $nombre_solicitante : ''; ?></td>
+                            <td><?php echo ''.isset($nombre) ?  $nombre : ''; ?></td>
                         </tr>
 
                         <tr>
                             <td>Ambito:</td>
-                            <td><?php echo ''.isset($nombre_ambito) ?  $nombre_ambito : ''; ?></td>
+                            <td><?php echo ''.isset($ambito) ?  $ambito : ''; ?></td>
                         </tr> 
 
                         <tr>
                             <td>Aula:</td>
-                            <td><?php echo ''.isset($nombre_aula) ?  $nombre_aula : ''; ?></td>
+                            <td><?php echo ''.isset($aula) ?  $aula : ''; ?></td>
                         </tr>
                         
                         <tr>
                             <td>Categoría:</td>
-                            <td><?php echo ''.isset($nombre_categoria) ?  $nombre_categoria : ''; ?></td>
+                            <td><?php echo ''.isset($categoria) ?  $categoria : ''; ?></td>
                         </tr>
 
                         <tr>
                             <td>Sub-categoría:</td>
-                            <td><?php echo ''.isset($nombre_subcat) ?  $nombre_subcat : ''; ?></td>
+                            <td><?php echo ''.isset($subcategoria) ?  $subcategoria : ''; ?></td>
                         </tr>
 
                         <tr>
                             <td>Prioridad:</td>
-                            <td><?php echo ''.isset($nombre_prioridad) ?  $nombre_prioridad : ''; ?></td>
+                            <td><?php echo ''.isset($prio) ?  $prio : ''; ?></td>
                         </tr>
 
                         <tr>
                             <td>Descripción:</td>
-                            <td><?php echo ''.isset($descrip_incidencia) ?  $descrip_incidencia : ''; ?></td>
+                            <td><?php echo ''.isset($descripcion) ?  $descripcion : ''; ?></td>
                         </tr>
 
                     </table>
@@ -158,13 +157,9 @@
                                     <div class="invalid-feedback">Debe escribir las observaciones de la incidencia</div>
                                 </div>
 
-                                <textarea name="fsolicitante" hidden ><?php echo $_GET['id_solicitante']; ?></textarea>
-                                <textarea name="fambito" hidden ><?php echo $_GET['id_ambito']; ?></textarea>
-                                <textarea name="faula" hidden ><?php echo $_GET['id_aula']; ?></textarea>
-                                <textarea name="fcategoria" hidden ><?php echo $_GET['id_categoria']; ?></textarea>
-                                <textarea name="fsubcat" hidden ><?php echo $_GET['id_sub_cat']; ?></textarea>
-                                <textarea name="fprioridad" hidden ><?php echo $_GET['id_prioridad']; ?></textarea>
-                                <textarea name="fincidencia"  hidden ><?php echo $_GET['id_incidencia']; ?></textarea>
+                                <textarea name="fid_incidencia" hidden ><?php echo $_GET['id_incidencia']; ?></textarea>
+                                
+                               
                         </fieldset>
 
                         <button type="submit" class="btn btn-dark">Enviar observaciones</button>

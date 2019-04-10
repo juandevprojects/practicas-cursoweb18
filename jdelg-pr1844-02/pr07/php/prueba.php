@@ -1,41 +1,85 @@
 <?php 
+// // *********** Prueba con la función prueba_demail
+// include_once '../php/config_mail.php'; // Agrego todas las funciones para enviar email
+// echo "Prueba con la función prueba_demail";
+// $cadena= prueba_demail();
+// echo $cadena;
 
-include_once '../../../../conexion.php'; // Agrego todas las credenciales de la base de datos
-include_once '../php/config_mail.php'; // Agrego todas las funciones para enviar email
-include_once 'funciones.php'; // Agrego funciones varias
+// // *************Prueba con la función mail_creacion_incidencia_responsable
+// include_once '../../../../conexion.php'; // Agrego todas las credenciales de la base de datos
+// include_once '../php/config_mail.php'; // Agrego todas las funciones para enviar email
+// // include_once 'funciones.php'; // Agrego funciones varias
+// echo "Prueba con la función mail_creacion_incidencia_responsable";
 
-echo $mailusername;
-echo "<p>**********</p>";
-echo $mailpassw;
-echo "<p>**********</p>";
-echo "Prueba de funciones del e-mail";
-echo "<p>**********</p>";
-$conn = mysqli_connect($host, $usuario, $clave, $db); 
-
-$error_email= mail_atencion_responsable("50", $conn ); // Revisar esta función porque me está fallando bello
-
-echo "<p>**********</p>";
-print_r($error_email);
-
-//   # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
+// //   # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
 // $conn = mysqli_connect($host, $usuario, $clave, $db);                                        
 // mysqli_set_charset($conn,"utf8"); // Establezco el juego de caracteres de la base de datos
-// echo "<p>Abro la conexión</p>";
+// echo "<p>Conexión a Base de Datos establecida</p>";
+
+// $error_email= mail_creacion_incidencia_responsable("96", $conn ); // Revisar esta función porque me está fallando bello
+
+// echo "<p>**********</p>";
+// print_r($error_email);
+
+#Cierro la conexión
+mysqli_close($conn);  
+echo "<p>Cierro la conexión</p>";
+
+
+#Cierro la conexión
+mysqli_close($conn);  
+echo "<p>Cierro la conexión</p>";
+
+#Cierro la conexión
+mysqli_close($conn);  
+echo "<p>Cierro la conexión</p>";
+
+#Cierro la conexión
+mysqli_close($conn);  
+echo "<p>Cierro la conexión</p>";
+#Cierro la conexión
+mysqli_close($conn);  
+echo "<p>Cierro la conexión</p>";
+#Cierro la conexión
+mysqli_close($conn);  
+echo "<p>Cierro la conexión</p>";
+
+
+// echo $mailusername;
+// echo "<p>**********</p>";
+// echo $mailpassw;
+// echo "<p>**********</p>";
+// echo "Prueba de funciones del e-mail";
+// echo "<p>**********</p>";
+// $conn = mysqli_connect($host, $usuario, $clave, $db); 
+
+
+// $incidencia= dame_una_incidencia("69", $conn);
+
+
+// print_r($incidencia);
+// echo "<p>**********</p>";
+// echo $incidencia['id_ambito'];
+
+
+
+
+
+
+
 
 
 // if (mysqli_connect_errno()) {
 //     echo json_encode( array("No pudo conectarse a la base de datos"));
 // } else {
-//   $error_mail=mail_atencion_responsable("29", $conn) ;
+//   $error_mail=mail_creacion_incidencia_responsable("29", $conn) ;
 
 //   print_r($error_mail['resultado']);
 //   echo "<p>****************************</p>";
 //   print_r($error_mail['mensaje']);
 //   echo "<p>****************************</p>";    
 // }
-// #Cierro la conexión
-// mysqli_close($conn);  
-// echo "<p>Cierro la conexión</p>";
+
 
 // $otra= array('mensaje'=> 'Esto es otra otra otra ');
 

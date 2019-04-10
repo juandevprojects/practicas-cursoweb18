@@ -244,188 +244,100 @@
 
 
 
-         <!-- ********Este código php es necesario para grabar las observaciones de la incidencia hecha con el php constructor  en el dado caso que se acceda a la página un post hecho en -->
-        <?php         
-        // $fsolicitante= $_POST['fsolicitante'];
-        // $fambito= $_POST['fambito'];
-        // $faula= $_POST['faula'];
-        // $fcategoria= $_POST['fcategoria'];
-        // $fsubcat= $_POST['fsubcat'];
-        // $fincidencia= $_POST['fincidencia'];
-        // $prioridad= $_POST['fprioridad'];
-
-        // echo $fsolicitante."".$prioridad."".$fambito."".$faula."".$fcategoria."".$fsubcat."".$fincidencia;
-
-
-        if ( empty($_POST) ) { 
-            echo '<div id="controlador" hidden>3</div>'; // Este es un controlador para javascript
-            // no hago nada
-        } else {
-            include_once '../../../conexion.php'; // Agrego todas las credenciales de la base de datos
-
-             if ( isset($_POST['fsolicitante']) ){  
-                 $fsolicitante= $_POST['fsolicitante'];
-             }
-
-             if ( isset($_POST['fambito']) ){  
-                 $fambito= $_POST['fambito'];
-             }
-
-             if ( isset($_POST['faula']) ){  
-                 $faula= $_POST['faula'];
-             }
-
-             if ( isset($_POST['fcategoria']) ){  
-                 $fcategoria= $_POST['fcategoria'];
-             }
-
-             if ( isset($_POST['fsubcat']) ){  
-                 $fsubcat= $_POST['fsubcat'];
-             }
-
-             if ( isset($_POST['fincidencia']) ){  
-                 $fincidencia= $_POST['fincidencia'];
-             }
-
-             if ( isset($_POST['fprioridad']) ){  
-                 $prioridad= $_POST['fprioridad'];
-             }           
-
-            // echo $fsolicitante."".$prioridad."".$fambito."".$faula."".$fcategoria."".$fsubcat."".$fincidencia;
-
-            # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
-            $conn = mysqli_connect($host, $usuario, $clave, $db);                                        
-            mysqli_set_charset($conn,"utf8"); // Establezco el juego de caracteres de la base de datos
-
-            if (mysqli_connect_errno()) {
-                echo '<div id="controlador" hidden>2</div>'; // Este es un controlador para javascript
+         <!-- ********Este código php es necesario para grabar las observaciones de la incidencia hecha con el php constructor  en el dado caso que se acceda a la página con un post hecho por los archivos atencion_incidencia.php o resolucion_incidencia.php -->
+        <?php    
+            //Chequo si me enviaron algo en el post para que no me rompan el código
+            if ( empty($_POST) ) { 
+                // No hago nada
             } else {
+                include_once '../../../conexion.php'; // Agrego todas las credenciales de la base de datos
+    
+                # Me conecto a la base de datos utilizando el conector para mysql mysqli_connect
+                $conn = mysqli_connect($host, $usuario, $clave, $db);                                        
+                mysqli_set_charset($conn,"utf8"); // Establezco el juego de caracteres de la base de datos
 
-                # Si el POST existe y la BD conectó entonces chequeo cada variable para que no me rompan el código 
-                if ( isset($_POST['fobservaciones']) ){                            
-                    # Establezco la tabla que deseo trabajar de la base de datos
-                    $tabla= 'incidencias'; 
-
-                    # Preparo la sentencia con los comodines ?  para insertar datos de la incidencia              
-                    $sql = 'UPDATE '.$tabla.' SET observaciones=(?) WHERE id='.intval($_POST['fincidencia']); // Esta es para insertar la incidencia en la tabla incidencia
-                        
-                    # Preparo los datos que voy a insertar de la incidencia
-                    if (isset($_POST['fresolucion'])) {
-                        date_default_timezone_set('UTC');
-
-                        # Preparo la query que quiero ejecutar
-                        $sql2= 'SELECT observaciones FROM '.$tabla.' WHERE id='.$_POST['fincidencia'];
-                        # Ejecuto la query
-                        $result= mysqli_query($conn, $sql2); 
-
-                        while( $fila= mysqli_fetch_array($result) ) {
-                            $observacion_vieja= $fila['observaciones'];           
-                        };                         
-                        // Libero la query
-                        mysqli_free_result($result);  
-
-                        // Establezco lo que voy a actualizar el campo observaciones    
-                        $uno= date(DATE_RFC2822)." ".$_POST['fobservaciones']."</br>&nbsp;&nbsp;&nbsp;&nbsp;". " " .$observacion_vieja;
-
-                        // $uno= "Modificada";
-                        // echo $uno;
-
-                    }else {
-                        $uno= date(DATE_RFC2822)." ".$_POST['fobservaciones'];  
-                        // $uno= "NO Modificada"; 
-                    }
-                          
-
-                    // # Preparo la consulta junto con los parámetros que voy a enviar
-                    $pre = mysqli_prepare($conn, $sql);
-
-                    // # indico los datos a reemplazar con su tipo
-                    mysqli_stmt_bind_param($pre, "s", $uno);
-
-                    // # Ejecuto la consulta
-                    mysqli_stmt_execute($pre);
-
-                    // # PASO OPCIONAL (SOLO PARA CONSULTAS DE INSERCIÓN):
-                    // # Obtener el ID del registro insertado
-                    $nuevo_id = mysqli_insert_id($conn);
-
-                    // # Cierro la consulta 
-                    mysqli_stmt_close($pre);
-
-                   // Enviar correo al solicitante de la incidencia y otro al administrador del sistema
-
-                    # Envío correo de confirmación al solicitante 
-                    $email_solicitante= dame_email("email_solicitante", "solicitantes", $_POST['fsolicitante'], $conn); //Obtengo el email del solicitante
-                    $email_responsable= dame_email("email_responsable", "configuracion", "1", $conn); //Obtengo el email del responsable de informática
-               
-
-                    if (isset($_POST['fresolucion'])) {
-
-                        // Envío el correo al solicitante
-                        $destinatario = $email_solicitante;
-                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
-                        $mensaje = "Hola, su incidencia ha sido atendida por el responsable de informática";
-                        mail($destinatario, $asunto, $mensaje);
-
-                        // Envío el correo al administrador del sistema
-                         # Preparo la query que quiero ejecutar
-                        $sql= 'SELECT observaciones FROM '.$tabla.' WHERE id='.$_POST['fincidencia'];
-                        # Ejecuto la query
-                        $result= mysqli_query($conn, $sql); 
-
-                        while( $fila= mysqli_fetch_array($result) ) {
-                            $observacion_vieja= $fila['observaciones'];             
-                        };                     
-                        // Libero la query
-                        mysqli_free_result($result);  
-
-                        $destinatario = $email_responsable;
-                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
-                        $mensaje= "La incidencia número ".$_POST['fincidencia']." se ha analizado y finalizado con las siguientes observaciones \" ".$observacion_vieja." \"";
-                        mail($destinatario, $asunto, $mensaje);                       
-
-                    } else{
-                        // Envío el correo al solicitante
-                        $destinatario = $email_solicitante;
-                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
-                        $mensaje = "Hola, su incidencia ha sido atendida por el responsable de informática";
-                        mail($destinatario, $asunto, $mensaje);
-
-                        // Envío el correo al administrador del sistema
-                        $destinatario = $email_responsable;
-                        $asunto = "Recepción de incidencia desde PHP número".$_POST['fincidencia'];
-                        $mensaje= "La incidencia número ".$_POST['fincidencia']." se ha analizado con la siguiente observación ".$_POST['fobservaciones']." Por favor finalice y cierre la incidencia http://localhost/practicas-cursoweb18/jdelg-pr1844-02/pr07/php/resolucion_incidencia.php?id_solicitante=".$fsolicitante."&id_ambito=".$fambito."&id_aula=".$faula."&id_categoria=".$fcategoria."&id_sub_cat=".$fsubcat."&id_prioridad=".$prioridad."&id_incidencia=".$fincidencia;
-                        mail($destinatario, $asunto, $mensaje);                      
-
-
-                    }
-
-
-                    // #Cierro la conexión
-                    mysqli_close($conn);
-
+                if (mysqli_connect_errno()) {
                     echo '<div id="controlador" hidden>1</div>'; // Este es un controlador para javascript
 
                 } else {
-                    echo '<div id="controlador" hidden>0</div>'; // Este es un controlador para javascript
+                    # Si el POST existe y la BD conectó entonces chequeo cada variable para que no me rompan el código 
+                    if ( isset($_POST['fobservaciones']) && isset($_POST['fid_incidencia']) ){  //chequo de variables
+                        include_once './php/funciones.php'; // Agrego funciones varias
+                        $_POST['fobservaciones']= filtrar_formulario($_POST['fobservaciones'], $conn);
 
+                        # Establezco la tabla que deseo trabajar de la base de datos
+                        $tabla= 'incidencias'; 
+
+                        # Preparo la sentencia con los comodines ?  para insertar datos de la incidencia              
+                        $sql = 'UPDATE '.$tabla.' SET observaciones=(?) WHERE id='.intval($_POST['fid_incidencia']); // Esta es para insertar la incidencia en la tabla incidencia
+                            
+                        # Preparo los datos que voy a insertar en el campo observaciones de la incidencia
+                        if (isset($_POST['fresolucion'])) {  // Si las observaciones vienen de resolucion_incidencia.php
+                            date_default_timezone_set('UTC');
+
+                            # Preparo la query que quiero ejecutar
+                            $sql2= 'SELECT observaciones FROM '.$tabla.' WHERE id='.$_POST['fid_incidencia'];
+                            # Ejecuto la query
+                            $result= mysqli_query($conn, $sql2); 
+
+                            while( $fila= mysqli_fetch_array($result) ) {
+                                $observacion_vieja= $fila['observaciones'];           
+                            };                         
+                            // Libero la query
+                            mysqli_free_result($result);  
+
+                            // Establezco lo que voy a actualizar el campo observaciones    
+                            $uno= "</br>&nbsp;&nbsp;&nbsp;&nbsp".date(DATE_RFC2822)." ".$_POST['fobservaciones']."</br>&nbsp;&nbsp;&nbsp;&nbsp". " " .$observacion_vieja;
+                        }else { // Si las observaciones vienen de atencion_incidencia.php
+                            $uno= "</br>&nbsp;&nbsp;&nbsp;&nbsp".date(DATE_RFC2822)." ".$_POST['fobservaciones'];  
+                        }
+                            
+
+                        // # Preparo la consulta junto con los parámetros que voy a enviar
+                        $pre = mysqli_prepare($conn, $sql);
+
+                        // # indico los datos a reemplazar con su tipo
+                        mysqli_stmt_bind_param($pre, "s", $uno);
+
+                        if (mysqli_stmt_execute($pre)) { // Ejecuto la query del UPDATE para modificar las observaciones de la incidencia
+                            include_once 'php/config_mail.php'; // incluyo las funciones para enviar correo                      
+
+                            // Chequeo si las observaciones vienen de atencion_incidencias.php o resolucion_incidencias.php, Para especificar el tipo de correo que vamos a enviar si es un correo de atención o un correo de resolución
+
+                            if (isset($_POST['fresolucion'])) { // Para enviar un correo de resolución de incidencia
+                                // Envío el email de notificación al responsable de informática y al solicitante de la incidencia
+                                $error_email= mail_resolucion_incidencia_responsable($_POST['fid_incidencia'], $conn );
+                                                                
+                                // Chequeo si envió el correo de resolución de incidencia tanto al solicitante de la incidencia como al responsable de informática. 
+                                chequeo_error_index_resolucion($error_email, $_POST['fid_incidencia'], $uno, $conn);  
+
+                            } else { // Para enviar un correo de atención de incidencia
+                                // Envío el email de notificación al responsable de informática y al solicitante de la incidencia
+                                $error_email= mail_atencion_incidencia_responsable($_POST['fid_incidencia'], $conn );
+
+                                // Chequeo si envió el correo de atención de incidencia tanto al solicitante de la incidencia como al responsable de informática
+                                chequeo_error_index_atencion($error_email, $_POST['fid_incidencia'], $uno, $conn );      
+
+                            }               
+                    
+                        } else {
+                            echo '<div id="controlador" hidden>9</div>\
+                            <div id="cont_mensaje" hidden>Incidencia NO procesada porque no se ejecutó la sentencia sql</div>'; 
+                        }
+                    
+                        // # Cierro la consulta 
+                        mysqli_stmt_close($pre);              
+                        // #Cierro la conexión
+                        mysqli_close($conn);                   
+
+                    } else {
+                        echo '<div id="controlador" hidden>0</div>'; // Este es un controlador para javascript
+                    }
                 }
             }
-
-
-
-        }
-
-
     ?>
 
     </div>
-
-   
-    
-
-
-
 
 
     <!-- jQuery library -->

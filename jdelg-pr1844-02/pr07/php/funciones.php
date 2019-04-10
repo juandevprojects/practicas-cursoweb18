@@ -51,6 +51,29 @@ function dame_un_campo($campo, $tabla, $id, $conn) {
     mysqli_free_result($result);    
 }
 
+function dame_una_incidencia($id, $conn) {
+    # Preparo la query que quiero ejecutar
+    $sql= 'SELECT * FROM incidencias WHERE id='.$id;
+
+    # Ejecuto la query
+    if ( $result= mysqli_query($conn, $sql) ) {
+        # Obtengo el resultado en una variable de php
+        while( $fila= mysqli_fetch_array($result) ) {
+            $incidencia= $fila;
+        };        
+
+        if (isset($incidencia)){
+            return $incidencia;
+        } else {
+            return null;
+        }
+    } else {
+        return null;
+    }                   
+
+    // Libero la query
+    mysqli_free_result($result);    
+}
 
 function filtrar_formulario($input_form, $conn){
     $input_form = strip_tags(htmlspecialchars($input_form));//strip_tags — Retira las etiquetas HTML y PHP de un string
